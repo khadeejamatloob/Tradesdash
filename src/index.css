@@ -1,0 +1,24 @@
+/* Tailwind ko load karo */
+@import "tailwindcss";
+
+/* @theme mein hum apne rang aur font define karte hain.
+   Naam "--color-navy-700" likhein to class ban jati hai "bg-navy-700",
+   "text-navy-700", "border-navy-700" wagera. */
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-navy-900: #14263F;   /* sab se gehra navy: sidebar */
+  --color-navy-700: #1F3A5F;   /* main navy: headings, primary buttons */
+  --color-navy-50:  #E8EEF5;   /* halka navy: hover, selected */
+  --color-accent:   #E07B20;   /* orange: ek khaas button har screen par */
+  --color-accent-50:#FDF1E3;   /* halka orange */
+  --color-page:     #F5F7FA;   /* poore page ka background */
+  --color-line:     #D9E0E8;   /* borders (lakeerein) */
+  --color-ink:      #1B2430;   /* main text */
+  --color-muted:    #5B6776;   /* halka text (caption) */
+  --color-success:  #15803D;   /* green: Paid, Approved */
+  --color-warning:  #F59E0B;   /* amber: Pending */
+  --color-danger:   #B91C1C;   /* red: Overdue, Declined */
+  --color-info:     #2563EB;   /* blue: Sent */
+  --color-whatsapp: #25D366;   /* WhatsApp green: sirf WhatsApp cheezon ke liye */
+}

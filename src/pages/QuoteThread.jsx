@@ -1,0 +1,81 @@
+// The Quote Thread screen (route: /inbox/quotes/:id).
+// Shows the chat of ONE quote and lets Ali reply.
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { threads } from '../data/threads'
+import { friendlyName } from '../utils/friendlyName'
+import BackButton from '../components/BackButton'
+import ThreadHeader from '../components/thread/ThreadHeader'
+import MessageList from '../components/thread/MessageList'
+import ReplyBox from '../components/thread/ReplyBox'
+import EmptyState from '../components/inbox/EmptyState'
+
+// The real chat. Separate component so messages reset when another quote is opened.
+function ThreadView({ id, thread }) {
+  // STATE: the list of messages, starting from the dummy data
+  const [messages, setMessages] = useState(thread.messages)
+
+  // The quote card and the "View quote" button open Group 1's Quote Preview
+  const previewLink = `/quotes/${id}/preview`
+
+  // The amount for templates comes from the first message that has a quote card
+  const amount = thread.messages.find((m) => m.card)?.card.total || ''
+
+  // Adds Ali's new message to the end of the list (one grey tick = sent)
+  function handleSend(text) {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    setMessages([...messages, { id: Date.now(), from: 'tradesperson', text, time, ticks: 'sent' }])
+  }
+
+  return (
+    <div className="p-4 sm:p-6">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-2">
+          <BackButton />
+        </div>
+
+        <div className="overflow-hidden rounded-lg border border-line bg-white shadow-sm">
+          <ThreadHeader
+            customer={thread.customer}
+            phone={thread.phone}
+            status={thread.status}
+            actionLabel="View quote"
+            actionTo={previewLink}
+          />
+
+          <MessageList messages={messages} cardTo={previewLink} />
+
+          <ReplyBox
+            onSend={handleSend}
+            values={{ customerName: friendlyName(thread.customer), amount }}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function QuoteThread() {
+  // useParams reads the :id from the address (/inbox/quotes/1 gives id = "1")
+  const { id } = useParams()
+  const thread = threads[id]
+
+  // No such quote (or it is not a quote): show a friendly message
+  if (!thread || thread.type !== 'quote') {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-2">
+            <BackButton />
+          </div>
+          <div className="rounded-lg border border-line bg-white shadow-sm">
+            <EmptyState message="This quote conversation was not found." />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // key={id} starts a fresh ThreadView for each quote
+  return <ThreadView key={id} id={id} thread={thread} />
+}

@@ -15,9 +15,12 @@ export default function TopBar() {
 
   function handleChange(e) {
     const value = e.target.value
-    if (pathname === '/inbox') {
-      // Already on the Inbox: update ?q= (empty text removes it)
-      setParams(value ? { q: value } : {}, { replace: true })
+       if (pathname === '/inbox') {
+      // Already on the Inbox: update ?q= but keep the other values (like ?tab=)
+      const next = new URLSearchParams(params)
+      if (value) next.set('q', value)
+      else next.delete('q')
+      setParams(next, { replace: true })
     } else if (value) {
       // On another page: jump to the Inbox with the search text
       navigate(`/inbox?q=${encodeURIComponent(value)}`)

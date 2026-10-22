@@ -136,7 +136,6 @@
 // The Inbox screen (route: /inbox), shown as "WhatsApp Hub" like the mock-up.
 // It keeps the selected tab, reads the search text from the address (?q=...),
 // and shows the matching chats.
-import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { FileText } from 'lucide-react'
 import { conversations } from '../data/conversations'
@@ -150,13 +149,20 @@ function simplify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 export default function Inbox() {
-  // STATE: which tab is selected
-  const [filter, setFilter] = useState('all')
+   // The selected tab and the search text both live in the address (?tab=...&q=...).
+  // The address is remembered, so after opening a chat and coming Back,
+  // the same tab and search are still selected.
+  const [params, setParams] = useSearchParams()
+  const filter = params.get('tab') || 'all'
+  const query = simplify(params.get('q') || '')
 
-  // SEARCH: the top bar writes the text into the address as ?q=...
-  // Here we read it back. Lowercase so "KHAN" and "khan" both match.
-  const [params] = useSearchParams()
-const query = simplify(params.get('q') || '')
+  // Called when a tab is clicked: write the new tab into the address.
+  function changeTab(value) {
+    const next = new URLSearchParams(params) // copy, so the search text stays
+    if (value === 'all') next.delete('tab')
+    else next.set('tab', value)
+    setParams(next, { replace: true })
+  }
 
   // Numbers for the heading and the tabs
   const unreadCount = conversations.filter((c) => c.unread > 0).length
@@ -205,8 +211,7 @@ const query = simplify(params.get('q') || '')
           </Link>
         </div>
 
-        <FilterTabs active={filter} onChange={setFilter} counts={counts} />
-
+    <FilterTabs active={filter} onChange={changeTab} counts={counts} />
         <div className="overflow-hidden rounded-lg border border-line bg-white shadow-sm">
           {shown.length === 0 ? (
             <EmptyState

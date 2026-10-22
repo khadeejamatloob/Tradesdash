@@ -21,4 +21,9 @@
   --color-danger:   #B91C1C;   /* red: Overdue, Declined */
   --color-info:     #2563EB;   /* blue: Sent */
   --color-whatsapp: #25D366;   /* WhatsApp green: sirf WhatsApp cheezon ke liye */
+    --color-wa-bg:   #ECE5DD;   /* chat wallpaper */
+  --color-wa-out:  #DCF8C6;   /* my message bubble (green) */
+  --color-wa-tick: #4FC3F7;   /* blue ticks (read) */
+  --color-wa-grey: #8696A0;   /* grey ticks (sent, delivered) */
+  --color-wa-time: #667781;   /* small time text */
 }
